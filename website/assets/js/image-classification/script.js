@@ -20,14 +20,18 @@ let predict = false;
 ENABLE_CAM_BUTTON.addEventListener('click', enableCam);
 // TRAIN_BUTTON.addEventListener('click', trainAndPredict);
 $(TRAIN_BUTTON).on('click', function () {
-    $('button,input').attr('disabled', true)
-    STATUS.innerHTML = `<p>Compiling model... please wait.</p>
-    <div class="progress">
-        <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 0%"></div>
-    </div>`
-    setTimeout(() => {
-        trainAndPredict()
-    }, 1000);
+    if (trainingDataInputs.length > 0) {
+        $('button,input').attr('disabled', true)
+        STATUS.innerHTML = `<p>Compiling model... please wait.</p>
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 0%"></div>
+            </div>`
+        setTimeout(() => {
+            trainAndPredict()
+        }, 1000);
+    } else {
+        STATUS.innerText = "Please add some data"
+    }
 })
 RESET_BUTTON.addEventListener('click', reset);
 
@@ -197,6 +201,7 @@ async function loadMobileNetFeatureModel() {
     modal.show()
 
     const URL = 'https://tfhub.dev/google/tfjs-model/imagenet/mobilenet_v3_small_100_224/feature_vector/5/default/1';
+    // const URL = 'https://tfhub.dev/google/tfjs-model/imagenet/mobilenet_v3_large_100_224/feature_vector/5/default/1'
 
     mobilenet = await tf.loadGraphModel(URL, { fromTFHub: true });
     $('.status-modal .modal-body').html('<p class="fs-5 my-0">Model builder loaded successfully!</p>')
