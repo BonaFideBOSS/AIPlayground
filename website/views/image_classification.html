@@ -1,0 +1,88 @@
+{% extends 'common.html' %}
+{% set page_title = "Image Classification" %}
+
+{% block style %}
+<style>
+    video {
+        clear: both;
+        display: block;
+        width: 100%;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <h1 class="display-4 fw-bold text-primary mb-5">Image Classification</h1>
+
+    <div class="alert alert-danger fs-5 d-lg-none" role="alert">Please use this tool on a large screen for better experience.</div>
+
+    <div class="modal status-modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-body d-flex gap-2 align-items-center justify-content-center">
+                    <div class="spinner-border text-secondary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="fs-5 my-0">Loading model builder... please wait</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row row-cols-2 row-gap-3">
+        <div class="col">
+            <div id="classes-container" class="d-flex flex-column gap-3 mb-4">
+                <div class="classes card rounded-3">
+                    <div class="card-header">
+                        <input type="text" placeholder="class name" value="Class 1"
+                            class="form-control form-control-lg">
+                    </div>
+                    <div class="card-body">
+                        <p class="sample-count" data-image-samples="0">Add image samples:</p>
+                        <button class="dataCollector btn btn-outline-primary" data-1hot="0" data-name="Class 1"
+                            disabled>
+                            Capture images
+                        </button>
+                    </div>
+                </div>
+
+                <div class="classes card rounded-3">
+                    <div class="card-header">
+                        <input type="text" placeholder="class name" value="Class 2"
+                            class="form-control form-control-lg">
+                    </div>
+                    <div class="card-body">
+                        <p class="sample-count" data-image-samples="1">Add image samples:</p>
+                        <button class="dataCollector btn btn-outline-primary" data-1hot="1" data-name="Class 2"
+                            disabled>
+                            Capture images
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <button id="add-class" class="btn btn-lg btn-primary">Add Class</button>
+
+            <div class="d-flex gap-2 flex-wrap mt-3">
+                <button id="train" class="btn btn-lg btn-primary">Train &amp; Predict!</button>
+                <button id="reset" class="btn btn-lg btn-danger">Reset</button>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="sticky-top">
+                <div id="status" class="alert alert-primary fs-5" role="alert">Loading model builder... please wait
+                </div>
+                <button id="enableCam" class="btn btn-lg btn-primary">Enable Webcam</button>
+                <video id="webcam" autoplay muted></video>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="{{url_for('static',filename='js/tensorflow/tf.min.js')}}"></script>
+<script src="{{url_for('static',filename='js/image-classification/script.js')}}"></script>
+{% endblock %}

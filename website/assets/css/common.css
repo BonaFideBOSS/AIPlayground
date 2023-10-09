@@ -1,0 +1,59 @@
+@font-face {
+  font-family: 'Montserrat Regular';
+  src: local('Montserrat Regular'), url('../font/Montserrat-Regular.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Montserrat Medium';
+  src: local('Montserrat Medium'), url('../font/Montserrat-Medium.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Montserrat SemiBold';
+  src: local('Montserrat SemiBold'), url('../font/Montserrat-SemiBold.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Montserrat Bold';
+  src: local('Montserrat Bold'), url('../font/Montserrat-Bold.woff') format('woff');
+}
+
+* {
+  font-family: 'Montserrat Medium', sans-serif;
+}
+
+.fw-normal {
+  font-family: 'Montserrat Regular', sans-serif;
+}
+
+.fw-medium {
+  font-family: 'Montserrat Medium', sans-serif;
+}
+
+.fw-semibold {
+  font-family: 'Montserrat SemiBold', sans-serif;
+}
+
+.fw-bold {
+  font-family: 'Montserrat Bold', sans-serif;
+}
+
+*:focus,
+*:focus-visible {
+  box-shadow: none !important;
+}
+
+.model-card {
+  transition: box-shadow .25s ease-in-out;
+  text-decoration: none;
+}
+
+.model-card img {
+  height: 250px;
+  object-fit: cover;
+}
+
+.model-card:hover {
+  box-shadow: var(--bs-box-shadow-lg) !important;
+  border: 0 !important;
+}

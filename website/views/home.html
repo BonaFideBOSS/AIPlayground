@@ -1,0 +1,59 @@
+{% extends 'common.html' %}
+{% set page_title = "Home" %}
+
+{% block style %}{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+
+  <div class="row align-items-center justify-content-center">
+    <div class="col-12 col-md-10 col-lg-6 text-center text-lg-start">
+      <p class="display-3 fw-semibold text-primary">AI Playground</p>
+      <p class="fs-5 fw-semibold">Train a computer to recognize your own texts, images, sounds, and more!</p>
+      <p class="fs-5">A fast and easy way to create machine learning models with no expertise or coding required.</p>
+      <a class="mt-3 btn btn-lg btn-primary px-5 py-3">Get Started</a>
+      <div class="ms-lg-2 mt-5 d-flex gap-4 flex-wrap justify-content-center justify-content-lg-start">
+        {% set tools = ['tensorflow','python','javascript','keras','numpy','matplotlib','flask','jquery','bootstrap'] %}
+        {% for tool in tools %}
+        <img src="{{url_for('static',filename='img/tools/'+tool+'.png')}}" height="25" alt="{{tool}}" title="{{tool}}">
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="d-none d-lg-block col-lg-5 offset-1">
+      <img src="{{url_for('static',filename='img/logo/logo-bg.png')}}" width="100%">
+    </div>
+  </div>
+
+</div>
+
+<div class="container pt-5 my-5">
+  <h1 class="display-5 my-5 fw-bold text-center">Train a Model</h1>
+
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-gap-4">
+
+    <div class="col">
+      <a href="{{url_for('views.image_classification')}}" class="card model-card rounded-4 h-100">
+        <img loading="lazy" src="{{url_for('static',filename='img/models/images.png')}}" class="card-img-top">
+        <div class="card-body mb-3 text-center">
+          <p class="fs-3 card-title fw-semibold">Image Classification</p>
+          <p class="fs-5 card-text">Teach a model to classify images using your webcam.</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="col">
+      <a href="" class="card model-card rounded-4 h-100">
+        <img loading="lazy" src="{{url_for('static',filename='img/models/chatbot.png')}}" class="card-img-top">
+        <div class="card-body mb-3 text-center">
+          <p class="fs-3 card-title fw-semibold">Chatbot</p>
+          <p class="fs-5 card-text">Train a model to mimic human conversation through text.</p>
+        </div>
+      </a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block script %}{% endblock %}

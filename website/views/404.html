@@ -1,0 +1,20 @@
+{% extends 'common.html' %}
+{% set page_title = "404" %}
+
+{% block style %}
+<style>
+  .error {
+    max-width: 100%;
+  }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container my-5 text-center">
+  <img class="error" src="{{url_for('static',filename='img/404.png')}}" height="100%">
+  <br>
+  <a class="btn btn-lg btn-primary mt-5" href="/">Return to homepage</a>
+</div>
+{% endblock %}
+
+{% block script %}{% endblock %}

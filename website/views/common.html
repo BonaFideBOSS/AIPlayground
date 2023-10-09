@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta http-equiv="X-UA-Compatible" content="IE=7">
+
+  <title>{{page_title + ' - ' if page_title != "Home"}}AI Playground</title>
+  <link rel="shortcut icon" href="{{url_for('static',filename='img/logo/favicon.ico')}}" type="image/x-icon">
+
+  <link rel="stylesheet" href="{{url_for('static',filename='bootstrap/bootstrap.css')}}">
+  <link rel="stylesheet" href="{{url_for('static',filename='bootstrap/bootstrap-icons.css')}}">
+  <link rel="stylesheet" href="{{url_for('static',filename='css/common.css')}}">
+
+  {% block style %}{% endblock %}
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-md">
+    <div class="container">
+      <a class="navbar-brand" href="{{url_for('views.home')}}">
+        <img src="{{url_for('static',filename='img/logo/logo-50.png')}}">
+      </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas-nav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse">
+        <div class="navbar-nav fs-5 ms-auto">
+          <a class="nav-link {{'active' if page_title=='Home'}}" href="{{url_for('views.home')}}">Home</a>
+          <a class="nav-link disabled" href="">Models</a>
+        </div>
+        <a class="ms-2 btn btn-primary" href="">Create Model</a>
+      </div>
+
+    </div>
+  </nav>
+
+  {% block body %}{% endblock %}
+
+  <footer class="py-5 text-secondary text-center">
+    <div class="container d-flex gap-3 flex-column flex-md-row align-items-center justify-content-md-between">
+      <span>This is an A.I. experimental website</span>
+      <a class="link-secondary link-offset-2 link-underline-opacity-25 link-underline-opacity-75-hover"
+        href="//almir.info" target="_blank">almir.info</a>
+    </div>
+  </footer>
+
+  <div id="notification-toast" class="toast-container position-fixed top-0 end-0 p-3"></div>
+
+  <script src="{{url_for('static',filename='bootstrap/bootstrap.js')}}"></script>
+  <script src="{{url_for('static',filename='js/jquery.js')}}"></script>
+  <script src="{{url_for('static',filename='js/common.js')}}"></script>
+
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  {% for message in messages %}
+  <script>
+    var message = "{{message}}"
+    notify(message, 5000)
+  </script>
+  {% endfor %}
+  {% endif %}
+  {% endwith %}
+
+  {% block script %}{% endblock %}
+</body>
+
+</html>
