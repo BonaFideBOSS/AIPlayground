@@ -16,6 +16,29 @@ let trainingDataOutputs = [];
 let examplesCount = [];
 let predict = false;
 
+// Loads the MobileNet model and warms it up so ready for use.
+async function loadMobileNetFeatureModel() {
+    const modal = new bootstrap.Modal(document.querySelector(".status-modal"), { backdrop: 'static' });
+    modal.show()
+
+    const URL = 'https://tfhub.dev/google/tfjs-model/imagenet/mobilenet_v3_small_100_224/feature_vector/5/default/1';
+    // const URL = 'https://tfhub.dev/google/tfjs-model/imagenet/mobilenet_v3_large_100_224/feature_vector/5/default/1'
+
+    mobilenet = await tf.loadGraphModel(URL, { fromTFHub: true });
+    $('.status-modal .modal-body').html('<p class="fs-5 my-0">Model builder loaded successfully!</p>')
+    modal.hide()
+    STATUS.innerText = 'Enable webcam to capture images'
+
+    // Warm up the model by passing zeros through it once.
+    tf.tidy(function () {
+        let answer = mobilenet.predict(tf.zeros([1, MOBILE_NET_INPUT_HEIGHT, MOBILE_NET_INPUT_WIDTH, 3]));
+        console.log('model builder loaded', answer.shape);
+    });
+}
+
+// Call the function immediately to start loading.
+loadMobileNetFeatureModel();
+
 
 ENABLE_CAM_BUTTON.addEventListener('click', enableCam);
 // TRAIN_BUTTON.addEventListener('click', trainAndPredict);
@@ -194,30 +217,6 @@ function dataGatherLoop() {
     }
 }
 
-
-// Loads the MobileNet model and warms it up so ready for use.
-async function loadMobileNetFeatureModel() {
-    const modal = new bootstrap.Modal(document.querySelector(".status-modal"));
-    modal.show()
-
-    const URL = 'https://tfhub.dev/google/tfjs-model/imagenet/mobilenet_v3_small_100_224/feature_vector/5/default/1';
-    // const URL = 'https://tfhub.dev/google/tfjs-model/imagenet/mobilenet_v3_large_100_224/feature_vector/5/default/1'
-
-    mobilenet = await tf.loadGraphModel(URL, { fromTFHub: true });
-    $('.status-modal .modal-body').html('<p class="fs-5 my-0">Model builder loaded successfully!</p>')
-    modal.hide()
-    STATUS.innerText = 'Enable webcam to capture images'
-
-    // Warm up the model by passing zeros through it once.
-    tf.tidy(function () {
-        let answer = mobilenet.predict(tf.zeros([1, MOBILE_NET_INPUT_HEIGHT, MOBILE_NET_INPUT_WIDTH, 3]));
-        console.log(answer.shape);
-    });
-}
-
-// Call the function immediately to start loading.
-loadMobileNetFeatureModel();
-
 const add_class_btn = document.getElementById('add-class')
 add_class_btn.addEventListener('click', function () {
     var no_of_classes = document.querySelectorAll('.classes').length
@@ -239,8 +238,6 @@ add_class_btn.addEventListener('click', function () {
     read_inputs()
     get_classes()
 })
-
-
 
 function read_inputs() {
     document.querySelectorAll('.classes input').forEach(class_input => {

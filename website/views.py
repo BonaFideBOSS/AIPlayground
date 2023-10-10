@@ -10,6 +10,11 @@ def home():
     return render_template("home.html")
 
 
-@views.route("/image-classification")
+@views.route("/model/qna/")
+def qna():
+    return render_template("model/qna.html")
+
+
+@views.route("/train/image-classification/")
 def image_classification():
-    return render_template("image_classification.html")
+    return render_template("train/image_classification.html")

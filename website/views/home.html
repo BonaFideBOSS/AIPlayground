@@ -12,10 +12,11 @@
       <p class="fs-5 fw-semibold">Train a computer to recognize your own texts, images, sounds, and more!</p>
       <p class="fs-5">A fast and easy way to create machine learning models with no expertise or coding required.</p>
       <a class="mt-3 btn btn-lg btn-primary px-5 py-3">Get Started</a>
-      <div class="ms-lg-2 mt-5 d-flex gap-4 flex-wrap justify-content-center justify-content-lg-start">
-        {% set tools = ['tensorflow','python','javascript','keras','numpy','matplotlib','flask','jquery','bootstrap'] %}
+      <div class="ms-lg-2 mt-5 d-flex gap-4 flex-wrap justify-content-center justify-content-lg-start align-items-end">
+        {% set tools = ['Tensorflow','JavaScript','jQuery','Python'] %}
         {% for tool in tools %}
-        <img src="{{url_for('static',filename='img/tools/'+tool+'.png')}}" height="25" alt="{{tool}}" title="{{tool}}">
+        <img src="{{url_for('static',filename='img/tools/'+tool|lower+'.png')}}" height="25" alt="{{tool}}"
+          title="{{tool}}" data-bs-title="{{tool}}" data-bs-toggle="tooltip" data-bs-placement="bottom">
         {% endfor %}
       </div>
     </div>
@@ -28,6 +29,24 @@
 </div>
 
 <div class="container pt-5 my-5">
+  <h1 class="display-5 my-5 fw-bold text-center">Use a Pre-Trained Model</h1>
+
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-gap-4">
+
+    <div class="col">
+      <a href="{{url_for('views.qna')}}" class="card model-card rounded-4 h-100">
+        <img loading="lazy" src="{{url_for('static',filename='img/models/qna.png')}}" class="card-img-top">
+        <div class="card-body mb-3 text-center">
+          <p class="fs-3 card-title fw-semibold">Q&A</p>
+          <p class="fs-5 card-text text-secondary">Ask questions based on the given context.</p>
+        </div>
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<div class="container pt-5 my-5">
   <h1 class="display-5 my-5 fw-bold text-center">Train a Model</h1>
 
   <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-gap-4">
@@ -37,22 +56,38 @@
         <img loading="lazy" src="{{url_for('static',filename='img/models/images.png')}}" class="card-img-top">
         <div class="card-body mb-3 text-center">
           <p class="fs-3 card-title fw-semibold">Image Classification</p>
-          <p class="fs-5 card-text">Teach a model to classify images using your webcam.</p>
+          <p class="fs-5 card-text text-secondary">Teach a model to classify images using your webcam.</p>
         </div>
       </a>
     </div>
 
-    <div class="col">
+    <!-- <div class="col">
       <a href="" class="card model-card rounded-4 h-100">
         <img loading="lazy" src="{{url_for('static',filename='img/models/chatbot.png')}}" class="card-img-top">
         <div class="card-body mb-3 text-center">
           <p class="fs-3 card-title fw-semibold">Chatbot</p>
-          <p class="fs-5 card-text">Train a model to mimic human conversation through text.</p>
+          <p class="fs-5 card-text text-secondary">Train a model to mimic human conversation through text.</p>
         </div>
       </a>
-    </div>
+    </div> -->
 
   </div>
+</div>
+
+<div class="container pt-5 my-5 text-center">
+  <h1 class="display-5 my-5 fw-bold">Made with...</h1>
+
+  <div class="offset-md-2 offset-lg-3 col-12 col-md-8 col-lg-6 d-flex gap-5 flex-wrap justify-content-center">
+    {% set tools = ['Tensorflow','JavaScript','jQuery','Keras','Numpy','MatPlotLib','Python','Flask','Bootstrap'] %}
+    {% for tool in tools %}
+    <img src="{{url_for('static',filename='img/tools/'+tool|lower+'.png')}}" height="48" alt="{{tool}}" title="{{tool}}"
+      data-bs-title="{{tool}}" data-bs-toggle="tooltip" data-bs-placement="bottom">
+    {% endfor %}
+  </div>
+
+  <a href="//github.com/BonaFideBOSS/AIPlayground" target="_blank" class="mt-5 btn btn-lg btn-dark">
+    <i class="bi bi-github me-2"></i>View code on GitHub
+  </a>
 </div>
 {% endblock %}
 

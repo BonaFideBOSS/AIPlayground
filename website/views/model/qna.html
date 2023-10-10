@@ -1,0 +1,60 @@
+{% extends 'common.html' %}
+{% set page_title = "Q&A" %}
+
+{% block style %}
+<style>
+	@media (min-width: 992px) {
+		#result {
+			max-height: 500px;
+		}
+	}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="modal status-modal">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content border-0 shadow-lg">
+			<div class="modal-body d-flex gap-2 align-items-center justify-content-center">
+				<div class="spinner-border text-secondary">
+					<span class="visually-hidden">Loading...</span>
+				</div>
+				<p class="fs-5 my-0">Loading model... please wait</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="container my-5">
+	<h1 class="display-4 fw-bold text-primary mb-5">Natural Language Q&A</h1>
+
+	<div class="row row-cols-1 row-cols-lg-2">
+
+		<div class="col">
+			<label for="context" class="form-label text-secondary">Context:</label>
+			<textarea class="form-control" id="context" rows="20" autofocus autocomplete="off"
+				placeholder="place your context inside this box..."></textarea>
+		</div>
+
+		<div class="col">
+			<div id='result' class="mt-4 overflow-hidden overflow-y-auto pb-3 pe-lg-2"></div>
+		</div>
+
+	</div>
+
+	<div class="mt-2 mt-lg-5 bg-white p-3 shadow-lg rounded-top-3 sticky-bottom">
+		<form id="search">
+			<div class="input-group input-group-lg">
+				<input id="question" type="text" class="form-control" placeholder="Search here..." autocomplete="off">
+				<button class="btn btn-outline-primary" type="submit"><i class="bi bi-search"></i></button>
+			</div>
+		</form>
+	</div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="{{url_for('static',filename='js/tensorflow/tf.min.js')}}"></script>
+<script src="{{url_for('static',filename='js/tensorflow/qna.js')}}"></script>
+<script src="{{url_for('static',filename='js/model/qna.js')}}"></script>
+{% endblock %}
