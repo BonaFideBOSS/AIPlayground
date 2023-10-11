@@ -13,7 +13,8 @@ def new_conversation():
     try:
         message = request.form.get("message", type=str)
         response = palm.chat(messages=message)
-        return response.last
+        if response.last:
+            return response.last
     except Exception as e:
         print(e)
     return "An error occured. Please try again."
