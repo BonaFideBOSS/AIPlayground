@@ -34,6 +34,16 @@
   <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-gap-4">
 
     <div class="col">
+      <a href="{{url_for('views.aichat')}}" class="card model-card rounded-4 h-100">
+        <img loading="lazy" src="{{url_for('static',filename='img/models/aichat.png')}}" class="card-img-top">
+        <div class="card-body mb-3 text-center">
+          <p class="fs-3 card-title fw-semibold">AI Chat</p>
+          <p class="fs-5 card-text text-secondary">Have a human-like conversation with an AI.</p>
+        </div>
+      </a>
+    </div>
+    
+    <div class="col">
       <a href="{{url_for('views.qna')}}" class="card model-card rounded-4 h-100">
         <img loading="lazy" src="{{url_for('static',filename='img/models/qna.png')}}" class="card-img-top">
         <div class="card-body mb-3 text-center">

@@ -2,12 +2,15 @@ from flask import Blueprint, render_template
 
 views = Blueprint("views", __name__)
 
-clients = []
-
 
 @views.route("/")
 def home():
     return render_template("home.html")
+
+
+@views.route("/model/aichat/")
+def aichat():
+    return render_template("model/aichat.html")
 
 
 @views.route("/model/qna/")
