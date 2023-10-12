@@ -4,13 +4,61 @@
 {% block style %}{% endblock %}
 
 {% block body %}
-<div class="container mt-5">
+<div class="container my-5">
   <h1 class="display-4 fw-bold text-primary mb-5">AI Image Generator</h1>
 
+  <form id="generate-image">
+    <label for="prompt" class="form-label text-secondary">Prompt</label>
+    <div class="row row-gap-3">
+      <div class="col-12 col-lg-9">
+        <textarea name="prompt" id="prompt" class="form-control form-control-lg" rows="5"
+          placeholder="Describe what you want to see..." required autocomplete="off" autofocus></textarea>
+      </div>
+
+      <div class="col-12 col-lg-3">
+        <div class="d-flex flex-row flex-lg-column gap-3">
+          <button type="submit" class="btn btn-lg btn-primary"><i class="bi bi-stars me-2"></i>Generate</button>
+          <button type="button" class="btn btn-lg btn-dark" data-bs-toggle="collapse"
+            data-bs-target="#prompt-options"><i class="bi bi-gear me-2"></i>Options</button>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="collapse" id="prompt-options">
+          <div class="card card-body">
+
+            <div class="mb-3">
+              <label for="size" class="form-label text-secondary">Size</label>
+              <div>
+                <input value="1" name="size" type="radio" class="btn-check" id="size-1" autocomplete="off" checked>
+                <label class="btn btn-outline-dark" for="size-1">512x512</label>
+              </div>
+            </div>
+
+            <div class="">
+              <label for="model" class="form-label text-secondary">Model</label>
+              <div>
+                <input value="text2img" name="model" type="radio" class="btn-check" id="model-default"
+                  autocomplete="off" checked>
+                <label class="btn btn-outline-dark" for="model-default">Default</label>
+                <input value="stable-diffusion" name="model" type="radio" class="btn-check" id="model-stable-diffusion"
+                  autocomplete="off">
+                <label class="btn btn-outline-dark" for="model-stable-diffusion">Stable Diffusion</label>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <div id="ai-images" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-gap-3"></div>
 
 </div>
 {% endblock %}
 
 {% block script %}
+<script src="{{url_for('static',filename='js/model/deepai.js')}}"></script>
 <script src="{{url_for('static',filename='js/model/txt2img.js')}}"></script>
 {% endblock %}
