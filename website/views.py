@@ -13,6 +13,11 @@ def aichat():
     return render_template("model/aichat.html")
 
 
+@views.route("/model/text-to-image/")
+def text_to_image():
+    return render_template("model/text-to-image.html")
+
+
 @views.route("/model/qna/")
 def qna():
     return render_template("model/qna.html")

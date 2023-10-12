@@ -1,0 +1,16 @@
+{% extends 'common.html' %}
+{% set page_title = "AI Image Generator" %}
+
+{% block style %}{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+  <h1 class="display-4 fw-bold text-primary mb-5">AI Image Generator</h1>
+
+
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="{{url_for('static',filename='js/model/txt2img.js')}}"></script>
+{% endblock %}
