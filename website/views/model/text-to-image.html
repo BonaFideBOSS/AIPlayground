@@ -73,8 +73,8 @@
 
     <div class="col">
       <div class="d-flex flex-column gap-3 h-100">
-        {% if session.txt2img %}
-        <div class="card card-body rounded-3 d-flex justify-content-center text-center border-2"
+        <div
+          class="delete-session-btn {{'d-none' if not session.txt2img}} card card-body rounded-3 d-flex justify-content-center text-center border-2"
           style="border-style: dashed;">
           <span class="fs-1"><i class="bi bi-trash"></i></span>
           <a href="{{url_for('aiart.delete_session')}}?db=txt2img"
@@ -82,7 +82,6 @@
             Clear saved images
           </a>
         </div>
-        {% endif %}
 
         <div class="card card-body rounded-3 d-flex justify-content-center text-center border-2"
           style="border-style: dashed;">

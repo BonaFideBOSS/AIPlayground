@@ -28,6 +28,7 @@ $('#generate-image').on('submit', async function (e) {
   if (image) {
     display_new_image(image)
     $(this).find('button').attr('disabled', false)
+    $('.delete-session-btn').removeClass('d-none')
   } else {
     display_fail_message()
   }
