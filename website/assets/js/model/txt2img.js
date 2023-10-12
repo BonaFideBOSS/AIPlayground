@@ -1,4 +1,4 @@
-const styles = ['text2img', 'stable-diffusion', 'fantasy-world-generator', 'cyberpunk-generator', 'logo-generator']
+const styles = ['text2img', 'stable-diffusion', 'cyberpunk-generator', 'logo-generator']
 
 $('#generate-image').on('submit', async function (e) {
   e.preventDefault()
