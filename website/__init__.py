@@ -8,8 +8,10 @@ def flask_app():
 
     from .views import views
     from .aichat import aichat
+    from .aiart import aiart
 
     app.register_blueprint(views, url_prefix="/")
     app.register_blueprint(aichat, url_prefix="/aichat")
+    app.register_blueprint(aiart, url_prefix="/aiart")
 
     return app

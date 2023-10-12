@@ -39,6 +39,20 @@
     </div>
   </nav>
 
+  <div class="offcanvas offcanvas-start" id="offcanvas-nav">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title"><img src="{{url_for('static',filename='img/logo/logo-50.png')}}"></h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body py-5">
+      <nav class="nav flex-column nav-pills gap-3 fs-1">
+        <a class="nav-link {{'active' if page_title=='Home'}}" href="{{url_for('views.home')}}">Home</a>
+        <a class="nav-link disabled" href="">Models</a>
+        <a class="nav-link disabled" href="">Create Model</a>
+      </nav>
+    </div>
+  </div>
+
   {% block body %}{% endblock %}
 
   <footer class="py-3 py-md-5 text-secondary text-center">

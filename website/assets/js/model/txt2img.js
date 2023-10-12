@@ -1,4 +1,4 @@
-const models = ['text2img', 'stable-diffusion']
+const styles = ['text2img', 'stable-diffusion', 'fantasy-world-generator', 'cyberpunk-generator', 'logo-generator']
 
 $('#generate-image').on('submit', async function (e) {
   e.preventDefault()
@@ -10,7 +10,7 @@ $('#generate-image').on('submit', async function (e) {
     return
   }
 
-  if (!(models.includes(query.model))) {
+  if (!(styles.includes(query.style))) {
     return
   }
 
@@ -24,7 +24,7 @@ $('#generate-image').on('submit', async function (e) {
     "height": img_height,
   }
 
-  var image = await generate_image(query.model, options)
+  var image = await generate_image(query.style, options)
   if (image) {
     display_new_image(image)
   } else {
@@ -34,13 +34,14 @@ $('#generate-image').on('submit', async function (e) {
   $(this).find('button').attr('disabled', false)
 })
 
-async function generate_image(model, options) {
+async function generate_image(style, options) {
   image = ""
   try {
     deepai.setApiKey('quickstart-QUdJIGlzIGNvbWluZy4uLi4K');
-    var result = await deepai.callStandardApi(model, options);
+    var result = await deepai.callStandardApi(style, options);
     if (result.output_url) {
       image = await upload_to_cloud(result.output_url)
+      add_to_session('txt2img', image)
     }
   } catch (error) {
     console.log(error)
@@ -51,7 +52,7 @@ async function generate_image(model, options) {
 function show_new_image_loader() {
   var loader = `
     <div class="col generating-image placeholder-wave">
-      <div class="card text-bg-dark h-100 border-0">
+      <div class="card text-bg-dark h-100 border-0 rounded-3">
         <img src="/assets/img/logo/logo-full.png" class="card-img opacity-0 placeholder h-100">
         <div class="card-img-overlay text-center d-flex flex-column justify-content-center">
           <h5 class="card-title">Generating image...</h5>
@@ -111,3 +112,19 @@ async function upload_to_cloud(image) {
 
   return image
 }
+
+function add_to_session(db, img) {
+  const url = '/aiart/add-to-session'
+  const data = { 'db': db, 'image': img }
+  $.post(url, data)
+}
+
+$('.btn-save-img').on('click', function () {
+  var image = $(this).data('img')
+  var link = document.createElement('a');
+  link.href = image;
+  link.download = image;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+})
