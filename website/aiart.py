@@ -1,4 +1,4 @@
-from flask import Blueprint, request, session
+from flask import Blueprint, request, session, redirect
 
 aiart = Blueprint("aiart", __name__)
 
@@ -19,3 +19,13 @@ def add_to_session():
     except Exception as e:
         print(e)
     return "", 204
+
+
+@aiart.route("/delete-session")
+def delete_session():
+    try:
+        db = request.args.get("db")
+        session.pop(db, None)
+    except Exception as e:
+        print(e)
+    return redirect(request.referrer)

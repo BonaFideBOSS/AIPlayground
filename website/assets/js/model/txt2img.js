@@ -39,7 +39,7 @@ async function generate_image(style, options) {
     deepai.setApiKey('quickstart-QUdJIGlzIGNvbWluZy4uLi4K');
     var result = await deepai.callStandardApi(style, options);
     if (result.output_url) {
-      image = await upload_to_cloud(result.output_url)
+      image = await upload_to_cloud(result.output_url, options.text)
       add_to_session('txt2img', image)
     }
   } catch (error) {
@@ -90,13 +90,16 @@ function scroll_to_new_image() {
   });
 }
 
-async function upload_to_cloud(image) {
+async function upload_to_cloud(image, name = null) {
   const api_key = 'd5189c1fb088a3558b2c8ca0fae2e392'
   const url = 'https://api.imgbb.com/1/upload'
 
   const form = new FormData()
   form.append('key', api_key)
   form.append('image', image)
+  if (name) {
+    form.append('name', name)
+  }
 
   await $.ajax({
     url: url,
