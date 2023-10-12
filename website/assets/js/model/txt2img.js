@@ -27,11 +27,10 @@ $('#generate-image').on('submit', async function (e) {
   var image = await generate_image(query.style, options)
   if (image) {
     display_new_image(image)
+    $(this).find('button').attr('disabled', false)
   } else {
     display_fail_message()
   }
-
-  $(this).find('button').attr('disabled', false)
 })
 
 async function generate_image(style, options) {
@@ -79,6 +78,7 @@ function display_fail_message() {
 
   setTimeout(() => {
     $('.generating-image').remove()
+    $('#generate-image button').attr('disabled', false)
   }, 10000);
 }
 
