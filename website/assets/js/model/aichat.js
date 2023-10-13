@@ -1,24 +1,33 @@
+var socketio = io()
+
 $(document).ready(function () {
-  get_chat_history()
-});
+  load_chat_history()
+})
 
-async function get_chat_history() {
-  var messages = []
-  await $.get('/aichat/history')
-    .done(function (response) {
-      messages = response
-    }).fail(function () {
-      console.log('Failed to get chat history.')
-    })
+function save_message(sender, message) {
+  var chat_history = get_chat_history()
+  const new_message = { 'sender': sender, 'message': message }
+  chat_history.push(new_message)
+  chat_history = JSON.stringify(chat_history)
+  localStorage.setItem('chat_history', chat_history)
+}
 
+function get_chat_history() {
+  var messages = localStorage.getItem('chat_history')
+  messages = messages ? JSON.parse(messages) : []
+  return messages
+}
+
+function load_chat_history() {
+  const messages = get_chat_history()
   var chat = ""
-  messages.forEach((message, index) => {
-    if (index % 2 == 0) {
-      // User Message
-      chat += render_user_message(message)
+
+  messages.forEach((message) => {
+
+    if (message.sender == 'user') {
+      chat += render_user_message(message.message)
     } else {
-      // AI Message
-      chat += render_bot_message(message)
+      chat += render_bot_message(message.message)
     }
   })
 
@@ -31,31 +40,28 @@ async function get_chat_history() {
 $('#send-message').on('submit', function (e) {
   e.preventDefault()
 
-  if ($('#message').val() == "") {
+  const message = $('#message').val()
+  if (message == "") {
     return
   }
+  $(this).find('input,button').attr('disabled', true)
 
-  send_message(this)
-  add_user_message($('#message').val())
+  var messages = get_chat_history()
+  messages = messages.map(i => i.message)
+  messages.push(message)
+
+  save_message('user', message)
+  socketio.emit('message', messages)
+
+  add_user_message(message)
   wait_for_bot_message()
   $('#message').val("")
   scroll_to_bottom()
 })
 
-async function send_message(message) {
-  const data = $(message).serialize()
-  const url = `/aichat/message`
-  if (message.checkValidity()) {
-    $.post(url, data)
-      .done(function (response) {
-        add_bot_message(response)
-      }).fail(function () {
-        add_bot_message("Failed to perform action.");
-      }).always(function () {
-        scroll_to_bottom()
-      })
-  }
-}
+socketio.on('ai_response', function (response) {
+  add_bot_message(response)
+});
 
 function add_user_message(message) {
   message = render_user_message(message)
@@ -72,10 +78,13 @@ function wait_for_bot_message() {
 }
 
 function add_bot_message(message) {
+  save_message('ai', message)
   $('#chat .waiting').remove()
   message = render_bot_message(message)
   $('#chat').append(message)
+  $('#send-message').find('input,button').attr('disabled', false)
   scroll_to_bottom()
+  $('#message').focus()
 }
 
 function render_user_message(message) {

@@ -1,6 +1,8 @@
 from flask import Blueprint, request, session
 import google.generativeai as palm
 import os
+from . import socketio
+from flask_socketio import emit
 
 aichat = Blueprint("aichat", __name__)
 
@@ -8,38 +10,19 @@ PALM_API = os.environ.get("PALM_API")
 palm.configure(api_key=PALM_API)
 
 
-@aichat.route("/message", methods=["POST"])
-def message():
+@socketio.on("message")
+def handle_message(messages):
     response = ""
     try:
-        messages = []
-        if "aichat" in session:
-            messages = session["aichat"]
-
-        message = request.form.get("message", type=str)
-        messages.append(message)
-
-        chat = palm.chat(messages=messages)
-        response = chat.last
-
+        response = new_message(messages)
         if not response:
-            response = "An unknown error occured."
-
-        messages.append(response)
-        session["aichat"] = messages
-        session.permanent = True
-
+            response = "Failed to generate response."
     except Exception as e:
+        response = "An unknown error occured."
         print(e)
-    return response
+    emit("ai_response", response, to=request.sid)
 
 
-@aichat.route("/history")
-def chat_history():
-    history = []
-    try:
-        if "aichat" in session:
-            history = session["aichat"]
-    except Exception as e:
-        print(e)
-    return history
+def new_message(messages):
+    response = palm.chat(messages=messages)
+    return response.last
