@@ -1,3 +1,2 @@
 Flask
-flask-socketio
 google-generativeai
