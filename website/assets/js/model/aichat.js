@@ -1,5 +1,3 @@
-var socketio = io()
-
 $(document).ready(function () {
   load_chat_history()
 })
@@ -51,7 +49,7 @@ $('#send-message').on('submit', function (e) {
   messages.push(message)
 
   save_message('user', message)
-  socketio.emit('message', messages)
+  send_message(messages)
 
   add_user_message(message)
   wait_for_bot_message()
@@ -59,9 +57,18 @@ $('#send-message').on('submit', function (e) {
   scroll_to_bottom()
 })
 
-socketio.on('ai_response', function (response) {
-  add_bot_message(response)
-});
+async function send_message(messages) {
+  const data = { 'messages[]': messages }
+  const url = `/aichat/message`
+  $.post(url, data)
+    .done(function (response) {
+      add_bot_message(response)
+    }).fail(function () {
+      add_bot_message("Failed to perform action.");
+    }).always(function () {
+      scroll_to_bottom()
+    })
+}
 
 function add_user_message(message) {
   message = render_user_message(message)
