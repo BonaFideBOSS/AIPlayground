@@ -12,7 +12,7 @@
   }
 
   footer {
-    opacity: 0;
+    display: none;
   }
 
   .form-container {
@@ -41,21 +41,21 @@
 {% endblock %}
 
 {% block body %}
-<div class="container mt-5">
+<div class="container my-5 pb-lg-5">
   <h1 class="display-4 fw-bold text-primary mb-5">AI Chat</h1>
 
-  <div id="chat">
+  <div id="chat" class="mb-5 pb-5">
     <div class="chat-history-loader text-center">
       <div class="spinner-border text-primary"></div>
     </div>
   </div>
 
-  <div class="form-container container py-2 pt-lg-5 pb-lg-3 fixed-bottom">
+  <div class="form-container container py-2 pt-5 pb-lg-3 fixed-bottom">
     <form id="send-message" class="bg-white p-2 p-md-3 shadow-lg rounded-3 border border-2 border-primary">
       <div class="input-group input-group-lg">
         <input id="message" name="message" type="text" class="form-control border-0" placeholder="Type here..."
           autocomplete="off" autofocus>
-        <button class="btn text-primary border-0" type="submit"><i class="bi bi-send"></i></button>
+        <button class="btn btn-lg shadow-0 text-primary border-0" type="submit"><i class="bi bi-send"></i></button>
       </div>
     </form>
   </div>

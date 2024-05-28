@@ -4,7 +4,7 @@
 {% block style %}
 <style>
 	footer {
-		opacity: 0;
+		display: none;
 	}
 
 	#result div {
@@ -33,31 +33,41 @@
 	</div>
 </div>
 
-<div class="container mt-5">
+<div class="container mt-5 mb-lg-3 pb-md-3 pb-lg-5">
 	<h1 class="display-4 fw-bold text-primary mb-5">Natural Language Q&A</h1>
 
-	<div class="row row-cols-1 row-cols-lg-2">
+	<div class="row row-cols-1 row-cols-lg-2 pb-5">
 
 		<div class="col">
 			<label for="context" class="form-label text-secondary">Context:</label>
-			<textarea class="form-control" id="context" rows="20" autofocus autocomplete="off"
+			<textarea class="form-control" id="context" rows="10" autofocus autocomplete="off"
 				placeholder="place your context inside this box..."></textarea>
 		</div>
 
 		<div class="col">
-			<div id='result' class="mt-4 overflow-hidden overflow-y-auto pb-3"></div>
+			<div id='result' class="mt-4 overflow-hidden overflow-y-auto pb-5"></div>
 		</div>
 
 	</div>
 
-	<div class="container py-2 pt-lg-5 pb-lg-3 fixed-bottom">
+	<!-- <div class="container py-2 pt-lg-5 pb-lg-3 fixed-bottom">
 		<form id="search" class="bg-white p-3 shadow-lg rounded-3">
 			<div class="input-group input-group-lg">
 				<input id="question" type="text" class="form-control" placeholder="Search here..." autocomplete="off">
 				<button class="btn btn-outline-primary" type="submit"><i class="bi bi-search"></i></button>
 			</div>
 		</form>
-	</div>
+	</div> -->
+
+	<div class="form-container container py-2 pt-5 pb-lg-3 fixed-bottom">
+    <form id="search" class="bg-white p-2 p-md-3 shadow-lg rounded-3 border border-2 border-primary">
+      <div class="input-group input-group-lg">
+        <input id="question" name="question" type="text" class="form-control border-0" placeholder="Search here..."
+          autocomplete="off">
+        <button class="btn btn-lg shadow-0 text-primary border-0" type="submit"><i class="bi bi-search"></i></button>
+      </div>
+    </form>
+  </div>
 </div>
 {% endblock %}
 

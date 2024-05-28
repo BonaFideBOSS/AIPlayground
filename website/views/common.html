@@ -10,7 +10,9 @@
   <title>{{page_title + ' - ' if page_title != "Home"}}AI Playground</title>
   <link rel="shortcut icon" href="{{url_for('static',filename='img/logo/favicon.ico')}}" type="image/x-icon">
 
-  <link rel="stylesheet" href="{{url_for('static',filename='bootstrap/bootstrap.css')}}">
+  <!-- <link rel="stylesheet" href="{{url_for('static',filename='bootstrap/bootstrap.css')}}"> -->
+  <link rel="stylesheet"
+    href="https://mdbootstrap.com/api/snippets/static/download/MDB5-Pro-Advanced_7.2.0/css/mdb.min.css">
   <link rel="stylesheet" href="{{url_for('static',filename='bootstrap/bootstrap-icons.css')}}">
   <link rel="stylesheet" href="{{url_for('static',filename='css/common.css')}}">
 
@@ -18,7 +20,7 @@
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-md">
+  <nav class="navbar navbar-expand-md shadow-0 bg-white">
     <div class="container">
       <a class="navbar-brand" href="{{url_for('views.home')}}">
         <img src="{{url_for('static',filename='img/logo/logo-50.png')}}">
@@ -55,17 +57,18 @@
 
   {% block body %}{% endblock %}
 
-  <footer class="py-3 py-md-5 text-secondary text-center">
+  <footer class="py-3 py-md-5 text-center opacity-75">
     <div class="container d-flex gap-3 flex-column flex-md-row align-items-center justify-content-md-between">
       <span>This is an A.I. experimental website</span>
-      <a class="link-secondary link-offset-2 link-underline-opacity-25 link-underline-opacity-75-hover"
+      <a class="btn btn-lg btn-link text-dark fs-6 text-lowercase" data-mdb-ripple-color="dark"
         href="//almir.info" target="_blank">almir.info</a>
     </div>
   </footer>
 
   <div id="notification-toast" class="toast-container position-fixed top-0 end-0 p-3"></div>
 
-  <script src="{{url_for('static',filename='bootstrap/bootstrap.js')}}"></script>
+  <!-- <script src="{{url_for('static',filename='bootstrap/bootstrap.js')}}"></script> -->
+  <script src="https://mdbootstrap.com/api/snippets/static/download/MDB5-Pro-Advanced_7.2.0/js/mdb.umd.min.js"></script>
   <script src="{{url_for('static',filename='js/jquery.js')}}"></script>
   <script src="{{url_for('static',filename='js/common.js')}}"></script>
 

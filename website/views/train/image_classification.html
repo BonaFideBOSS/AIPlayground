@@ -1,7 +1,13 @@
 {% extends 'common.html' %}
 {% set page_title = "Image Classification" %}
 
-{% block style %}{% endblock %}
+{% block style %}
+<style>
+	.samples-container {
+		height: 100px;
+	}
+</style>
+{% endblock %}
 
 {% block body %}
 <div class="modal status-modal">
@@ -26,30 +32,26 @@
 
 	<div class="row row-cols-2 row-gap-3">
 		<div class="col">
-			<div id="classes-container" class="d-flex flex-column gap-3 mb-4">
-				<div class="classes card rounded-3">
-					<div class="card-header">
-						<input type="text" placeholder="class name" value="Class 1" class="form-control form-control-lg">
-					</div>
-					<div class="card-body">
-						<p class="sample-count" data-image-samples="0">Add image samples:</p>
-						<button class="dataCollector btn btn-outline-primary" data-1hot="0" data-name="Class 1" disabled>
-							Capture images
-						</button>
-					</div>
-				</div>
 
-				<div class="classes card rounded-3">
-					<div class="card-header">
-						<input type="text" placeholder="class name" value="Class 2" class="form-control form-control-lg">
+			<div id="classes-container" class="d-flex flex-column gap-3 mb-4">
+				{% for i in range(2) %}
+				<div class="classes card shadow-0 border">
+					<div class="card-header p-3 text-bg-light">
+						<div class="form-outline" data-mdb-input-init>
+							<input type="text" class="form-control form-control-lg" value="Class {{i+1}}" placeholder="class name" />
+							<label class="form-label">Class Label</label>
+						</div>
 					</div>
 					<div class="card-body">
-						<p class="sample-count" data-image-samples="1">Add image samples:</p>
-						<button class="dataCollector btn btn-outline-primary" data-1hot="1" data-name="Class 2" disabled>
+						<p class="sample-count mb-0" data-image-samples-count="{{i}}">Add image samples:</p>
+						<div data-image-samples="{{i}}"
+							class="samples-container py-3 d-flex gap-1 overflow-hidden overflow-x-scroll d-none"></div>
+						<button class="dataCollector btn btn-primary mt-3" data-1hot="{{i}}" data-name="Class {{i+1}}" disabled>
 							Capture images
 						</button>
 					</div>
 				</div>
+				{% endfor %}
 			</div>
 
 			<button id="add-class" class="btn btn-lg btn-primary">
@@ -57,8 +59,29 @@
 			</button>
 
 			<div class="d-flex gap-2 flex-wrap mt-3">
+				<button type="button" class="btn btn-lg btn-primary" data-mdb-collapse-init data-mdb-target="#advanced-options">
+					<i class="bi bi-gear me-2"></i>Options
+				</button>
 				<button id="train" class="btn btn-lg btn-primary">Train &amp; Predict</button>
 				<button id="reset" class="btn btn-lg btn-danger">Reset</button>
+			</div>
+
+			<div class="collapse mt-3" id="advanced-options">
+				<div class="card card-body shadow-0 border">
+
+					<p class="card-text">Advanced Options</p>
+
+					<div class="input-group mb-3">
+						<span class="input-group-text">Epochs</span>
+						<input type="number" id="epochs" class="form-control" value="10" />
+					</div>
+
+					<div class="input-group">
+						<span class="input-group-text">Batch Size</span>
+						<input type="number" id="batchSize" class="form-control" value="5" />
+					</div>
+
+				</div>
 			</div>
 		</div>
 

@@ -1,21 +1,15 @@
-// Bootstrap Tooltips
-function enable_tooltips() {
-  const tooltipTriggerList = document.querySelectorAll(
-    '[data-bs-toggle="tooltip"]'
-  );
-  [...tooltipTriggerList].map(
-    (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
-  );
+function enable_ripple(selector = ".btn") {
+  document.querySelectorAll(selector).forEach((el) => {
+    new mdb.Ripple(el);
+  });
 }
-enable_tooltips();
-
+enable_ripple();
 
 // Bootstrap Toasts
 const toastElList = document.querySelectorAll(".toast");
 const toastList = [...toastElList].map(
   (toastEl) => new bootstrap.Toast(toastEl)
 );
-
 
 // Notification Toast
 function notify(message, delay = 5000) {
