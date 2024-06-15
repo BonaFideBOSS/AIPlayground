@@ -3,8 +3,8 @@ const VIDEO = document.getElementById("webcam");
 const ENABLE_CAM_BUTTON = document.getElementById("enableCam");
 const RESET_BUTTON = document.getElementById("reset");
 const TRAIN_BUTTON = document.getElementById("train");
-const MOBILE_NET_INPUT_WIDTH = 224;
-const MOBILE_NET_INPUT_HEIGHT = 224;
+const IMAGE_WIDTH = 224;
+const IMAGE_HEIGHT = 224;
 const STOP_DATA_GATHER = -1;
 var CLASS_NAMES = [];
 
@@ -36,9 +36,7 @@ async function loadMobileNetFeatureModel() {
 
   // Warm up the model by passing zeros through it once.
   tf.tidy(function () {
-    let answer = mobilenet.predict(
-      tf.zeros([1, MOBILE_NET_INPUT_HEIGHT, MOBILE_NET_INPUT_WIDTH, 3])
-    );
+    let answer = mobilenet.predict(tf.zeros([1, IMAGE_HEIGHT, IMAGE_WIDTH, 3]));
     console.log("model builder loaded", answer.shape);
   });
 }
@@ -64,15 +62,18 @@ $(TRAIN_BUTTON).on("click", function () {
 });
 RESET_BUTTON.addEventListener("click", reset);
 
-function hasGetUserMedia() {
-  return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+async function hasGetUserMedia() {
+  // const devices = await navigator.mediaDevices.enumerateDevices();
+  // const videoInputs = devices.filter((device) => device.kind === "videoinput");
+  return navigator.mediaDevices && navigator.mediaDevices.getUserMedia;
 }
 
 function enableCam() {
   if (hasGetUserMedia()) {
+    VIDEO.classList.remove("d-none");
     // getUsermedia parameters.
     const constraints = {
-      video: true,
+      video: { facingMode: "environment" },
       // width: 640,
       height: 480,
     };
@@ -133,30 +134,53 @@ async function trainAndPredict() {
   inputsAsTensor.dispose();
   predict = true;
   $("button,input").attr("disabled", false);
-  predictLoop();
+  if (videoPlaying) {
+    predictLoop();
+  } else {
+    STATUS.innerHTML = `Training completed! Upload an image to test your model.`;
+    $("#testImgFile").on("change", (event) => {
+      predictImg(event);
+    });
+  }
+  $("#testImgBtn").removeClass("d-none");
+}
+
+function prediction(testData) {
+  tf.tidy(function () {
+    let FrameAsTensor = tf.browser.fromPixels(testData).div(255);
+    let resizedTensorFrame = tf.image.resizeBilinear(
+      FrameAsTensor,
+      [IMAGE_HEIGHT, IMAGE_WIDTH],
+      true
+    );
+
+    let imageFeatures = mobilenet.predict(resizedTensorFrame.expandDims());
+    let prediction = model.predict(imageFeatures).squeeze();
+    let highestIndex = prediction.argMax().arraySync();
+    let predictionArray = prediction.arraySync();
+
+    STATUS.innerHTML = `Prediction: <span class="fw-semibold">${
+      CLASS_NAMES[highestIndex]
+    }</span> with <span class="fw-semibold">${Math.floor(
+      predictionArray[highestIndex] * 100
+    )}%</span> confidence`;
+  });
+}
+
+function predictImg(event) {
+  if (predict) {
+    const imgElement = document.getElementById("testImgPrev");
+    imgElement.src = URL.createObjectURL(event.target.files[0]);
+    imgElement.onload = () => prediction(imgElement);
+    imgElement.width = IMAGE_WIDTH;
+    imgElement.height = IMAGE_HEIGHT;
+    imgElement.classList.remove("d-none");
+  }
 }
 
 function predictLoop() {
   if (predict) {
-    tf.tidy(function () {
-      let videoFrameAsTensor = tf.browser.fromPixels(VIDEO).div(255);
-      let resizedTensorFrame = tf.image.resizeBilinear(
-        videoFrameAsTensor,
-        [MOBILE_NET_INPUT_HEIGHT, MOBILE_NET_INPUT_WIDTH],
-        true
-      );
-
-      let imageFeatures = mobilenet.predict(resizedTensorFrame.expandDims());
-      let prediction = model.predict(imageFeatures).squeeze();
-      let highestIndex = prediction.argMax().arraySync();
-      let predictionArray = prediction.arraySync();
-
-      STATUS.innerHTML = `Prediction: <span class="fw-semibold">${
-        CLASS_NAMES[highestIndex]
-      }</span> with <span class="fw-semibold">${Math.floor(
-        predictionArray[highestIndex] * 100
-      )}%</span> confidence`;
-    });
+    prediction(VIDEO);
     window.requestAnimationFrame(predictLoop);
   }
 }
@@ -183,17 +207,64 @@ function reset() {
   $(".sample-count").text("Add image samples:");
   $(".samples-container").html("");
   $(".samples-container").addClass("d-none");
+  $("#testImgPrev").addClass("d-none");
   console.log("Tensors in memory: " + tf.memory().numTensors);
+}
+
+function processData(data) {
+  let imageFeatures = tf.tidy(function () {
+    let imageTensor = tf.browser.fromPixels(data);
+    let resizedTensorFrame = tf.image.resizeBilinear(
+      imageTensor,
+      [IMAGE_HEIGHT, IMAGE_WIDTH],
+      true
+    );
+    let normalizedTensorFrame = resizedTensorFrame.div(255);
+    return mobilenet.predict(normalizedTensorFrame.expandDims()).squeeze();
+  });
+  trainingDataInputs.push(imageFeatures);
+  trainingDataOutputs.push(gatherDataState);
+}
+
+function updateSamples(element) {
+  let canvas = document.createElement("canvas");
+  canvas.width = IMAGE_WIDTH;
+  canvas.height = IMAGE_HEIGHT;
+  let ctx = canvas.getContext("2d");
+  ctx.drawImage(element, 0, 0, canvas.width, canvas.height);
+  const $sampleContainer = $(`[data-image-samples="${gatherDataState}"]`);
+  $sampleContainer.removeClass("d-none");
+  $sampleContainer.append(canvas);
+  $sampleContainer.scrollLeft($sampleContainer.get(0).scrollWidth);
+
+  if (examplesCount[gatherDataState] === undefined) {
+    examplesCount[gatherDataState] = 0;
+  }
+  examplesCount[gatherDataState]++;
+
+  for (let n = 0; n < CLASS_NAMES.length; n++) {
+    var samples = examplesCount[n] ? examplesCount[n] : 0;
+    if (samples > 0) {
+      $(`[data-image-samples-count="${n}"]`).text(`Image samples: ${samples}`);
+    }
+  }
 }
 
 function get_classes() {
   CLASS_NAMES = [];
   let dataCollectorButtons = document.querySelectorAll("button.dataCollector");
+  let dataCollectorFileButtons = document.querySelectorAll(
+    "input.dataCollectorFile"
+  );
   for (let i = 0; i < dataCollectorButtons.length; i++) {
     dataCollectorButtons[i].addEventListener("click", gatherDataForClass);
+    dataCollectorFileButtons[i].addEventListener("change", (event) => {
+      handleImgFiles(event);
+    });
     // dataCollectorButtons[i].addEventListener('mouseup', gatherDataForClass);
     // Populate the human readable names for classes.
     var class_name = $(dataCollectorButtons[i])
+      .parent()
       .parent()
       .parent()
       .find("input")
@@ -202,6 +273,28 @@ function get_classes() {
   }
 }
 get_classes();
+
+function handleImgFiles(event) {
+  let classNumber = parseInt(event.target.getAttribute("data-1hot"));
+  console.log(classNumber);
+  gatherDataState = classNumber;
+  for (const file of event.target.files) {
+    processImageFile(file);
+  }
+}
+
+function processImageFile(file) {
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    const imgElement = new Image();
+    imgElement.src = e.target.result;
+    imgElement.onload = () => {
+      processData(imgElement);
+      updateSamples(imgElement);
+    };
+  };
+  reader.readAsDataURL(file);
+}
 
 function gatherDataForClass() {
   $(".dataCollector").prop("disabled", true);
@@ -220,44 +313,8 @@ function gatherDataForClass() {
 
 function dataGatherLoop() {
   if (videoPlaying && gatherDataState !== STOP_DATA_GATHER) {
-    let imageFeatures = tf.tidy(function () {
-      let videoFrameAsTensor = tf.browser.fromPixels(VIDEO);
-      let resizedTensorFrame = tf.image.resizeBilinear(
-        videoFrameAsTensor,
-        [MOBILE_NET_INPUT_HEIGHT, MOBILE_NET_INPUT_WIDTH],
-        true
-      );
-      let normalizedTensorFrame = resizedTensorFrame.div(255);
-      return mobilenet.predict(normalizedTensorFrame.expandDims()).squeeze();
-    });
-
-    trainingDataInputs.push(imageFeatures);
-    trainingDataOutputs.push(gatherDataState);
-
-    let canvas = document.createElement("canvas");
-    canvas.width = MOBILE_NET_INPUT_WIDTH;
-    canvas.height = MOBILE_NET_INPUT_HEIGHT;
-    let ctx = canvas.getContext("2d");
-    ctx.drawImage(VIDEO, 0, 0, canvas.width, canvas.height);
-    const $sampleContainer = $(`[data-image-samples="${gatherDataState}"]`);
-    $sampleContainer.removeClass("d-none");
-    $sampleContainer.append(canvas);
-    $sampleContainer.scrollLeft($sampleContainer.get(0).scrollWidth);
-
-    // Intialize array index element if currently undefined.
-    if (examplesCount[gatherDataState] === undefined) {
-      examplesCount[gatherDataState] = 0;
-    }
-    examplesCount[gatherDataState]++;
-
-    for (let n = 0; n < CLASS_NAMES.length; n++) {
-      var samples = examplesCount[n] ? examplesCount[n] : 0;
-      if (samples > 0) {
-        $(`[data-image-samples-count="${n}"]`).text(
-          `Image samples: ${samples}`
-        );
-      }
-    }
+    processData(VIDEO);
+    updateSamples(VIDEO);
     window.requestAnimationFrame(dataGatherLoop);
   }
 }
@@ -279,11 +336,21 @@ add_class_btn.addEventListener("click", function () {
         <div class="card-body">
             <p class="sample-count mb-0" data-image-samples-count="${no_of_classes}">Add image samples:</p>
             <div data-image-samples="${no_of_classes}" class="samples-container py-3 d-flex gap-1 overflow-hidden overflow-x-scroll d-none"></div>
-            <button class="dataCollector btn btn-primary mt-3" data-1hot="${no_of_classes}" data-name="Class ${
+            <div class="d-flex gap-2 flex-wrap mt-3">
+							<button class="dataCollector btn btn-primary" data-1hot="${no_of_classes}" data-name="Class ${
     no_of_classes + 1
   }" ${disabled}>
-                Capture images
-            </button>
+								<i class="bi bi-camera me-2"></i>
+								<span>Capture images</span>
+							</button>
+							<button class="btn btn-secondary"
+								onclick="document.querySelector(\`.dataCollectorFile[data-1hot='${no_of_classes}']\`).click()">
+								<i class="bi bi-upload me-2"></i>
+								<span>Upload images</span>
+							</button>
+							<input type="file" accept="image/*" multiple class="dataCollectorFile d-none" data-1hot="${no_of_classes}"
+								data-name="Class ${no_of_classes + 1}" />
+						</div>
         </div>
     </div>`;
   $("#classes-container").append(new_class);
