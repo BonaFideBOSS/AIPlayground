@@ -20,9 +20,10 @@ $("#generate-image").on("submit", async function (e) {
   }
 
   const options = {
-    text: query.prompt,
-    aspect_ratio: "1:1",
-    samples: 1,
+    prompt: query.prompt,
+    height: 512,
+    width: 512,
+    nsfw: true,
   };
 
   var image = await generate_image(options);
@@ -39,9 +40,8 @@ async function generate_image(options) {
   image = "";
   try {
     var result = await text2img(options);
-    if (result.data) {
-      const API_DATA = result.data[0];
-      image = await upload_to_cloud(API_DATA.asset_url, options.text);
+    if (result) {
+      image = await upload_to_cloud(result, options.prompt);
       add_to_session("txt2img", image);
     }
   } catch (error) {
@@ -51,31 +51,59 @@ async function generate_image(options) {
 }
 
 async function text2img(options) {
-  console.log(options);
-  const resp = await fetch(`https://api.limewire.com/api/image/generation`, {
+  var image = "";
+  var resp = await fetch(`https://aihorde.net/api/v2/generate/async`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-Api-Version": "v1",
-      Accept: "application/json",
-      Authorization:
-        "Bearer lmwr_sk_jsVlFoO4JI_4sKFgY3nUt674GeqAinpw4QodEExewge2y57s",
+      Apikey: "M3-8HJXP08jAGwl-WtQdtQ",
     },
     body: JSON.stringify(options),
   });
+  resp = await resp.json();
+  const process_id = resp.id;
+  var wait_time = -1;
 
-  const data = await resp.json();
-  console.log(data);
+  await timer(5000);
+  while (true) {
+    var resp = await fetch(
+      `https://aihorde.net/api/v2/generate/check/${process_id}`
+    );
+    resp = await resp.json();
+    if (resp.finished == 1) {
+      var resp = await fetch(
+        `https://aihorde.net/api/v2/generate/status/${process_id}`
+      );
+      resp = await resp.json();
+      image = resp.generations[0].img;
+      image = await imageUrlToBase64(image);
+      image = image.replace("data:image/webp;base64,", "");
+      break;
+    } else {
+      wait_time = wait_time > resp.wait_time ? wait_time : resp.wait_time;
+      var wait = wait_time - resp.wait_time;
+      wait = (wait * 100) / wait_time;
+      $(".progress-bar").css("width", `${wait.toFixed(0)}%`);
+      $(".progress-bar").html(`${wait.toFixed(0)}%`);
+    }
+    await timer(5000);
+  }
+  return image;
 }
+
+const timer = (ms) => new Promise((res) => setTimeout(res, ms));
 
 function show_new_image_loader() {
   var loader = `
     <div class="col generating-image placeholder-wave">
-      <div class="card text-bg-dark h-100 border-0 rounded-3">
-        <img src="/assets/img/logo/logo-full.png" class="card-img opacity-0 placeholder h-100">
+      <div class="card text-bg-dark h-100 border-0 rounded-3 overflow-hidden">
+        <img src="/assets/img/logo/logo-full.png" class="card-img opacity-0 placeholder h-100 rounded-3">
         <div class="card-img-overlay text-center d-flex flex-column justify-content-center">
           <h5 class="card-title">Generating image...</h5>
           <p class="card-text text-secondary">Please hold on! This may take a while.</p>
+          <div class="progress rounded-9" style="height: 20px;">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%;">0%</div>
+          </div>
         </div>
       </div>
     </div>
@@ -85,7 +113,7 @@ function show_new_image_loader() {
 }
 
 function display_new_image(image) {
-  image = `<img src="${image}" width="100%">`;
+  image = `<img src="${image}" width="100%" class="rounded-3">`;
   $(".generating-image").html(image);
   $(".generating-image").removeClass("generating-image placeholder-wave");
 }
@@ -153,3 +181,17 @@ $(".btn-save-img").on("click", function () {
   link.click();
   document.body.removeChild(link);
 });
+
+const imageUrlToBase64 = async (url) => {
+  const data = await fetch(url);
+  const blob = await data.blob();
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(blob);
+    reader.onloadend = () => {
+      const base64data = reader.result;
+      resolve(base64data);
+    };
+    reader.onerror = reject;
+  });
+};
