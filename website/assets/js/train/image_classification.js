@@ -41,7 +41,7 @@ async function loadMobileNetFeatureModel() {
   });
 }
 
-// Call the function immediately to start loading.
+// Calling the function immediately to start loading.
 loadMobileNetFeatureModel();
 
 ENABLE_CAM_BUTTON.addEventListener("click", enableCam);
@@ -128,6 +128,8 @@ async function trainAndPredict() {
     epochs: parseInt($("#epochs").val()),
     callbacks: { onEpochEnd: logProgress },
   });
+
+  await model.save("downloads://my-model");
 
   outputsAsTensor.dispose();
   oneHotOutputs.dispose();
