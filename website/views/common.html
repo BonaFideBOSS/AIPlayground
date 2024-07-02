@@ -8,7 +8,16 @@
   <meta http-equiv="X-UA-Compatible" content="IE=7">
 
   <title>{{page_title + ' - ' if page_title != "Home"}}AI Playground</title>
+  <meta name="description"
+    content="A fast and easy way to create machine learning models with no expertise or coding required">
   <link rel="shortcut icon" href="{{url_for('static',filename='img/logo/favicon.ico')}}" type="image/x-icon">
+
+  <meta property="og:title" content="AI Playground">
+  <meta property="og:url" content="https://ai.almir.info/">
+  <meta property="og:type" content="web.app">
+  <meta property="og:description"
+    content="A fast and easy way to create machine learning models with no expertise or coding required">
+  <meta property="og:image" content="https://ai.almir.info/assets/img/logo/logo.png">
 
   <link rel="stylesheet" href="{{url_for('static',filename='bootstrap/mdb.css')}}">
   <link rel="stylesheet" href="{{url_for('static',filename='bootstrap/bootstrap-icons.css')}}">
