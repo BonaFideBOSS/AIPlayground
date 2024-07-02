@@ -51,7 +51,7 @@
 								<i class="bi bi-camera me-2"></i>
 								<span>Capture images</span>
 							</button>
-							<button class="btn btn-secondary"
+							<button class="btn btn-primary"
 								onclick="document.querySelector(`.dataCollectorFile[data-1hot='{{i}}']`).click()">
 								<i class="bi bi-upload me-2"></i>
 								<span>Upload images</span>
@@ -74,6 +74,8 @@
 					<i class="bi bi-gear me-2"></i>Options
 				</button>
 				<button id="train" class="btn btn-lg btn-success">Train &amp; Predict</button>
+				<button id="download" class="btn btn-lg btn-primary" disabled><i
+						class="bi bi-download me-2"></i>Download</button>
 				<button id="reset" class="btn btn-lg btn-danger">Reset</button>
 			</div>
 
@@ -120,5 +122,8 @@
 
 {% block script %}
 <script src="{{url_for('static',filename='js/tensorflow/tf.min.js')}}"></script>
+<script src="{{url_for('static',filename='js/jszip.js')}}"></script>
+<script src="{{url_for('static',filename='js/filesaver/FileSaver.js')}}"></script>
+<script src="{{url_for('static',filename='js/train/image_classifier_example.js')}}"></script>
 <script src="{{url_for('static',filename='js/train/image_classification.js')}}"></script>
 {% endblock %}

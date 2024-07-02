@@ -129,8 +129,6 @@ async function trainAndPredict() {
     callbacks: { onEpochEnd: logProgress },
   });
 
-  await model.save("downloads://my-model");
-
   outputsAsTensor.dispose();
   oneHotOutputs.dispose();
   inputsAsTensor.dispose();
@@ -139,7 +137,7 @@ async function trainAndPredict() {
   if (videoPlaying) {
     predictLoop();
   } else {
-    STATUS.innerHTML = `Training completed! Upload an image to test your model.`;
+    STATUS.innerHTML = `<b>Training completed!</b> Upload an image to test your model.`;
     $("#testImgFile").on("change", (event) => {
       predictImg(event);
     });
@@ -160,6 +158,8 @@ function prediction(testData) {
     let prediction = model.predict(imageFeatures).squeeze();
     let highestIndex = prediction.argMax().arraySync();
     let predictionArray = prediction.arraySync();
+
+    console.log(CLASS_NAMES);
 
     STATUS.innerHTML = `Prediction: <span class="fw-semibold">${
       CLASS_NAMES[highestIndex]
@@ -186,6 +186,40 @@ function predictLoop() {
     window.requestAnimationFrame(predictLoop);
   }
 }
+
+$("#download").on("click", async () => {
+  if (predict) {
+    const modelSave = await model.save(
+      tf.io.withSaveHandler(async (artifacts) => {
+        return artifacts;
+      })
+    );
+
+    const modelJSON = {
+      modelTopology: modelSave.modelTopology,
+      weightsManifest: [
+        { paths: ["./model.weights.bin"], weights: modelSave.weightSpecs },
+      ],
+    };
+
+    const zip = new JSZip();
+    zip.file("model.json", JSON.stringify(modelJSON));
+    zip.file("model.weights.bin", modelSave.weightData);
+    zip.file("start_classifier.bat", EXAMPLE_CODE_BAT);
+    zip.file("index.html", EXAMPLE_CODE_HTML);
+    zip.file("class_names.json", JSON.stringify(CLASS_NAMES));
+    zip.file("app.js", EXAMPLE_CODE_JS);
+    zip.file("start_classifier.bat", EXAMPLE_CODE_BAT);
+
+    zip.generateAsync({ type: "blob" }).then(function (content) {
+      saveAs(content, "my-classifier.zip");
+    });
+
+    STATUS.innerHTML =
+      "<i class='bi bi-info-circle-fill text-warning'></i> <b>Model downloaded</b>! Please note that you need NodeJS installed to the run the classifier in your local machine. Download the latest version of NodeJS from <a href='https://nodejs.org/' target='_blank' class='text-decoration-underline'>here</a>.";
+    // await model.save("downloads://my-model");
+  }
+});
 
 function logProgress(epoch, logs) {
   var percentage = ((epoch + 1) * 100) / parseInt($("#epochs").val());
@@ -278,7 +312,6 @@ get_classes();
 
 function handleImgFiles(event) {
   let classNumber = parseInt(event.target.getAttribute("data-1hot"));
-  console.log(classNumber);
   gatherDataState = classNumber;
   for (const file of event.target.files) {
     processImageFile(file);
@@ -345,7 +378,7 @@ add_class_btn.addEventListener("click", function () {
 								<i class="bi bi-camera me-2"></i>
 								<span>Capture images</span>
 							</button>
-							<button class="btn btn-secondary"
+							<button class="btn btn-primary"
 								onclick="document.querySelector(\`.dataCollectorFile[data-1hot='${no_of_classes}']\`).click()">
 								<i class="bi bi-upload me-2"></i>
 								<span>Upload images</span>
