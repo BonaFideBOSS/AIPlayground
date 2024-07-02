@@ -8,6 +8,16 @@ def home():
     return render_template("home.html")
 
 
+@views.route("/model")
+def pretrained():
+    return render_template("pretrained.html")
+
+
+@views.route("/train")
+def custom():
+    return render_template("custom.html")
+
+
 @views.route("/model/aichat/")
 def aichat():
     return render_template("model/aichat.html")

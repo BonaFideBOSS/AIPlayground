@@ -1,0 +1,38 @@
+{% extends 'common.html' %}
+{% set page_title = "Train" %}
+
+{% block style %}
+<link rel="stylesheet" href="{{url_for('static',filename='css/home.css')}}">
+{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+  <h1 class="display-5 my-5 fw-bold text-center">Create a Custom Model</h1>
+
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-gap-4">
+
+    <div class="col">
+      <a href="{{url_for('views.image_classification')}}" class="card model-card rounded-9 border h-100">
+        <img loading="lazy" src="{{url_for('static',filename='img/models/images.png')}}" class="card-img-top">
+        <div class="card-body mb-3 text-center">
+          <p class="fs-3 card-title fw-semibold">Image Classification</p>
+          <p class="fs-5 card-text text-secondary">Teach a model to classify images using your webcam</p>
+        </div>
+      </a>
+    </div>
+
+    <!-- <div class="col">
+      <a href="" class="card model-card rounded-4 h-100">
+        <img loading="lazy" src="{{url_for('static',filename='img/models/chatbot.png')}}" class="card-img-top">
+        <div class="card-body mb-3 text-center">
+          <p class="fs-3 card-title fw-semibold">Chatbot</p>
+          <p class="fs-5 card-text text-secondary">Train a model to mimic human conversation through text.</p>
+        </div>
+      </a>
+    </div> -->
+
+  </div>
+</div>
+{% endblock %}
+
+{% block script %}{% endblock %}

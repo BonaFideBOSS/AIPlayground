@@ -1,0 +1,48 @@
+{% extends 'common.html' %}
+{% set page_title = "Model" %}
+
+{% block style %}
+<link rel="stylesheet" href="{{url_for('static',filename='css/home.css')}}">
+{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+  <h1 class="display-5 my-5 fw-bold text-center">Pre-Trained Models</h1>
+
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-gap-4">
+
+    <div class="col">
+      <a href="{{url_for('views.aichat')}}" class="card model-card rounded-9 border h-100">
+        <img loading="lazy" src="{{url_for('static',filename='img/models/aichat.png')}}" class="card-img-top">
+        <div class="card-body mb-3 text-center">
+          <p class="fs-3 card-title fw-semibold">AI Chat</p>
+          <p class="fs-5 card-text text-secondary">Have a human-like conversation with AI</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="col">
+      <a href="{{url_for('views.text_to_image')}}" class="card model-card rounded-9 border h-100">
+        <img loading="lazy" src="{{url_for('static',filename='img/models/txt2img.png')}}" class="card-img-top">
+        <div class="card-body mb-3 text-center">
+          <p class="fs-3 card-title fw-semibold">Image Generator</p>
+          <p class="fs-5 card-text text-secondary">Create an image from text prompt</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="col">
+      <a href="{{url_for('views.qna')}}" class="card model-card rounded-9 border h-100">
+        <img loading="lazy" src="{{url_for('static',filename='img/models/qna.png')}}" class="card-img-top">
+        <div class="card-body mb-3 text-center">
+          <p class="fs-3 card-title fw-semibold">Q&A</p>
+          <p class="fs-5 card-text text-secondary">Ask questions based on the given context</p>
+        </div>
+      </a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block script %}{% endblock %}
