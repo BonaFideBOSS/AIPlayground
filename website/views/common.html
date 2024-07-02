@@ -33,7 +33,8 @@
         <img src="{{url_for('static',filename='img/logo/logo-50.png')}}">
       </a>
 
-      <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas-nav">
+      <button class="navbar-toggler" type="button" data-mdb-ripple-init data-mdb-toggle="sidenav"
+        data-mdb-target="#sidenav">
         <span class="navbar-toggler-icon"></span>
       </button>
 
@@ -50,19 +51,24 @@
     </div>
   </nav>
 
-  <div class="offcanvas offcanvas-start" id="offcanvas-nav">
-    <div class="offcanvas-header">
-      <h5 class="offcanvas-title"><img src="{{url_for('static',filename='img/logo/logo-50.png')}}"></h5>
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+  <nav data-mdb-sidenav-init data-mdb-scroll-container=".sidenav-menu" id="sidenav" class="sidenav">
+    <div class="text-center">
+      <h1 class="py-4 satisfy-regular">AI Playground</h1>
     </div>
-    <div class="offcanvas-body py-5">
-      <nav class="nav flex-column nav-pills gap-3 fs-1">
-        <a class="nav-link {{'active' if page_title=='Home'}}" href="{{url_for('views.home')}}">Home</a>
-        <a class="nav-link disabled" href="">Models</a>
-        <a class="nav-link disabled" href="">Create Model</a>
-      </nav>
-    </div>
-  </div>
+    <ul class="sidenav-menu px-0">
+      <li class="sidenav-item">
+        <a class="sidenav-link rounded-0 {{'active' if page_title=='Home'}}" href="{{url_for('views.home')}}">Home</a>
+      </li>
+      <li class="sidenav-item">
+        <a class="sidenav-link rounded-0 {{'active' if page_title=='Model'}}"
+          href="{{url_for('views.pretrained')}}">Models</a>
+      </li>
+      <li class="sidenav-item">
+        <a class="sidenav-link rounded-0 {{'active' if page_title=='Train'}}" href="{{url_for('views.custom')}}">Create
+          Model</a>
+      </li>
+    </ul>
+  </nav>
 
   {% block body %}{% endblock %}
 
