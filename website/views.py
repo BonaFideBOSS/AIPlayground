@@ -9,13 +9,13 @@ def home():
 
 
 @views.route("/model")
-def pretrained():
-    return render_template("pretrained.html")
+def models():
+    return render_template("models.html")
 
 
 @views.route("/train")
-def custom():
-    return render_template("custom.html")
+def train():
+    return render_template("train.html")
 
 
 @views.route("/model/aichat/")

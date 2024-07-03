@@ -41,9 +41,9 @@
       <div class="collapse navbar-collapse">
         <div class="navbar-nav fs-5 ms-auto">
           <a class="nav-link {{'active' if page_title=='Home'}}" href="{{url_for('views.home')}}">Home</a>
-          <a class="nav-link {{'active' if page_title=='Model'}}" href="{{url_for('views.pretrained')}}">Models</a>
+          <a class="nav-link {{'active' if page_title=='Model'}}" href="{{url_for('views.models')}}">Models</a>
         </div>
-        <a class="ms-2 btn btn-primary {{'active' if page_title=='Train'}}" href="{{url_for('views.custom')}}">
+        <a class="ms-2 btn btn-primary {{'active' if page_title=='Train'}}" href="{{url_for('views.train')}}">
           Create Model
         </a>
       </div>
@@ -61,10 +61,10 @@
       </li>
       <li class="sidenav-item">
         <a class="sidenav-link rounded-0 {{'active' if page_title=='Model'}}"
-          href="{{url_for('views.pretrained')}}">Models</a>
+          href="{{url_for('views.models')}}">Models</a>
       </li>
       <li class="sidenav-item">
-        <a class="sidenav-link rounded-0 {{'active' if page_title=='Train'}}" href="{{url_for('views.custom')}}">Create
+        <a class="sidenav-link rounded-0 {{'active' if page_title=='Train'}}" href="{{url_for('views.train')}}">Create
           Model</a>
       </li>
     </ul>

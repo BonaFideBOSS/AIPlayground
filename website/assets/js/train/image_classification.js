@@ -3,11 +3,11 @@ const VIDEO = document.getElementById("webcam");
 const ENABLE_CAM_BUTTON = document.getElementById("enableCam");
 const RESET_BUTTON = document.getElementById("reset");
 const TRAIN_BUTTON = document.getElementById("train");
+
 const IMAGE_WIDTH = 224;
 const IMAGE_HEIGHT = 224;
 const STOP_DATA_GATHER = -1;
 var CLASS_NAMES = [];
-
 let mobilenet = undefined;
 let gatherDataState = STOP_DATA_GATHER;
 let videoPlaying = false;
@@ -63,8 +63,6 @@ $(TRAIN_BUTTON).on("click", function () {
 RESET_BUTTON.addEventListener("click", reset);
 
 async function hasGetUserMedia() {
-  // const devices = await navigator.mediaDevices.enumerateDevices();
-  // const videoInputs = devices.filter((device) => device.kind === "videoinput");
   return navigator.mediaDevices && navigator.mediaDevices.getUserMedia;
 }
 
@@ -159,8 +157,6 @@ function prediction(testData) {
     let highestIndex = prediction.argMax().arraySync();
     let predictionArray = prediction.arraySync();
 
-    console.log(CLASS_NAMES);
-
     STATUS.innerHTML = `Prediction: <span class="fw-semibold">${
       CLASS_NAMES[highestIndex]
     }</span> with <span class="fw-semibold">${Math.floor(
@@ -247,6 +243,7 @@ function reset() {
   console.log("Tensors in memory: " + tf.memory().numTensors);
 }
 
+// Processing Images
 function processData(data) {
   let imageFeatures = tf.tidy(function () {
     let imageTensor = tf.browser.fromPixels(data);
@@ -262,6 +259,7 @@ function processData(data) {
   trainingDataOutputs.push(gatherDataState);
 }
 
+// Data Preview - Displaying images after they have been processed
 function updateSamples(element) {
   let canvas = document.createElement("canvas");
   canvas.width = IMAGE_WIDTH;
@@ -297,8 +295,6 @@ function get_classes() {
     dataCollectorFileButtons[i].addEventListener("change", (event) => {
       handleImgFiles(event);
     });
-    // dataCollectorButtons[i].addEventListener('mouseup', gatherDataForClass);
-    // Populate the human readable names for classes.
     var class_name = $(dataCollectorButtons[i])
       .parent()
       .parent()
